@@ -112,7 +112,7 @@ $pdo = null;
 
     <?php
 // データベース接続情報
-$dsn = 'mysql:host=localhost;dbname=git_test';
+$dsn = 'mysql:host=localhost;dbname=git-test';
 $username = 'root';
 $password = '';
 
