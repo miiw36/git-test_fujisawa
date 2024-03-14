@@ -14,18 +14,19 @@ try {
     exit;
 }
 
-if (isset($_POST['name'], $_POST['email'], $_POST['message'])) {
+if (isset($_POST['name'], $_POST['email'], $_POST['subject'], $_POST['message'])) {
     // フォームからのデータを取得
     $name = trim($_POST['name']);
     $email = trim($_POST['email']);
+    $subject = trim($_POST['subject']);
     $message = trim($_POST['message']);
 
     // バリデーション：空白の場合はエラーメッセージを表示
-    if (empty($name) || empty($email) || empty($message)) {
-        echo '名前、メールアドレス、メッセージは必須項目です。';
+    if (empty($name) || empty($email) || empty($subject) || empty($message)) {
+        echo '名前、メールアドレス、宛先、メッセージは必須項目です。';
     } else {
         // データベースに挿入するSQLクエリの準備
-        $sql = "INSERT INTO comments (name, email, message) VALUES (:name, :email, :message)";
+        $sql = "INSERT INTO comments (name, email, subject, message) VALUES (:name, :email, :subject, :message)";
 
         // プリペアドステートメントの準備
         $stmt = $pdo->prepare($sql);
@@ -34,6 +35,7 @@ if (isset($_POST['name'], $_POST['email'], $_POST['message'])) {
         try {
             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->bindParam(':subject', $subject, PDO::PARAM_STR);
             $stmt->bindParam(':message', $message, PDO::PARAM_STR);
             $stmt->execute();
             echo 'データが正常に挿入されました。';
@@ -81,7 +83,8 @@ $pdo = null;
     <!-- Profile & Introduction Section -->
     <section>
         <h2>Profile & Introduction</h2>
-        <img src="./image/bastet.png" alt="Your Photo" width="200">
+        <h3>藤沢 バステト</h3>
+        <img src="./image/bastet.png" alt="bastet" width="200">
         <p>
         はじめまして、私は藤澤と申します。日々、家庭と仕事をバランスよくこなしながら、充実した生活を送っています。
 
@@ -90,6 +93,16 @@ $pdo = null;
         日常生活では、仕事に情熱を注ぎながらも、家族との時間を大切に過ごしています。夫とはお互いの支え合いながら、幸せな家庭を築いています。
 
         これからも、自分自身を成長させながら、家族や仲間と共に笑顔あふれる日々を過ごしていきたいと考えています。よろしくお願いします。
+        </p>
+    </section>
+    <section>
+        <h2>Profile & Introduction</h2>
+        <h3>赤木 エジプトガン</h3>
+        <img src="./image/egyptian.png" alt="egyptian" width="200">
+        <p>
+        訓練のため大阪に滞在中です。大阪に来てからカモにはまりました。
+        
+        カモは冬鳥で、最近はカモたちがだんだん飛び立っていっており、寂しく思っています。
         </p>
     </section>
 
@@ -102,6 +115,13 @@ $pdo = null;
 
             <label for="email">Email:</label><br>
             <input type="email" id="email" name="email" required><br><br>
+
+            <label for="subject">宛先:</label><br>
+            <select id="subject" name="subject" required>
+                <option value="all">全員</option>
+                <option value="藤沢 バステト">藤沢 バステト</option>
+                <option value="赤木 エジプトガン">赤木 エジプトガン</option>
+            </select><br><br>
 
             <label for="message">Message:</label><br>
             <textarea id="message" name="message" rows="4" required></textarea><br><br>
@@ -142,6 +162,7 @@ foreach ($comments as $comment) {
     $comments_html .= '<div class="comment">';
     $comments_html .= '<p><strong>Name:</strong> ' . htmlspecialchars($comment['name']) . '</p>';
     $comments_html .= '<p><strong>Email:</strong> ' . htmlspecialchars($comment['email']) . '</p>';
+    $comments_html .= '<p><strong>Subject:</strong> ' . htmlspecialchars($comment['subject']) . '</p>';
     $comments_html .= '<p><strong>Message:</strong> ' . htmlspecialchars($comment['message']) . '</p>';
     $comments_html .= '</div>';
 }
